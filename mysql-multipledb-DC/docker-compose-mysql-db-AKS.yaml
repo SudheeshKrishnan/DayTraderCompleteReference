@@ -1,0 +1,88 @@
+version: '3.4'
+
+services:
+  daytrader-web:
+    image: vayalankatil/daytrader-web:4.0.18
+    environment:
+      - DAYTRADER_ACCOUNTS_SERVICE=https://daytrader-accounts:1443
+      - DAYTRADER_GATEWAY_SERVICE=https://daytrader-gateway:2443
+      - DAYTRADER_PORTFOLIOS_SERVICE=https://daytrader-portfolios:3443
+      - DAYTRADER_QUOTES_SERVICE=https://daytrader-quotes:4443
+      
+    ports:
+      - "5443:5443"
+    restart: always
+    networks:
+      - local
+
+    depends_on:
+      - daytrader-accounts
+      - daytrader-gateway
+      - daytrader-portfolios
+      - daytrader-quotes
+
+  daytrader-accounts:
+    image: vayalankatil/daytrader-accounts:4.0.18
+    ports:
+      - "1443:1443"
+    restart: always
+    networks:
+      - local
+    depends_on:
+      - daytrader-portfolios
+      - daytrader-quotes
+    environment:
+      - DAYTRADER_ACCOUNTS_SERVICE=https://daytrader-accounts:1443
+      - DAYTRADER_GATEWAY_SERVICE=https://daytrader-gateway:2443
+      - DAYTRADER_PORTFOLIOS_SERVICE=https://daytrader-portfolios:3443
+      - DAYTRADER_QUOTES_SERVICE=https://daytrader-quotes:4443  
+
+  daytrader-gateway:
+    image: vayalankatil/daytrader-gateway:4.0.18
+    ports:
+      - "2443:2443"
+    restart: always
+    networks:
+      - local
+    depends_on:
+      - daytrader-accounts
+      - daytrader-portfolios
+      - daytrader-quotes
+    environment:
+      - DAYTRADER_ACCOUNTS_SERVICE=https://daytrader-accounts:1443
+      - DAYTRADER_GATEWAY_SERVICE=https://daytrader-gateway:2443
+      - DAYTRADER_PORTFOLIOS_SERVICE=https://daytrader-portfolios:3443
+      - DAYTRADER_QUOTES_SERVICE=https://daytrader-quotes:4443
+
+  daytrader-portfolios:
+    image: vayalankatil/daytrader-portfolios:4.0.18
+    ports:
+      - "3443:3443"
+    restart: always
+    networks:
+      - local
+    depends_on:
+       - daytrader-quotes
+    environment:
+      - DAYTRADER_ACCOUNTS_SERVICE=https://daytrader-accounts:1443
+      - DAYTRADER_GATEWAY_SERVICE=https://daytrader-gateway:2443
+      - DAYTRADER_PORTFOLIOS_SERVICE=https://daytrader-portfolios:3443
+      - DAYTRADER_QUOTES_SERVICE=https://daytrader-quotes:4443
+
+  daytrader-quotes:
+    image: vayalankatil/daytrader-quotes:4.0.18
+    ports:
+      - "4443:4443"
+    restart: always
+    networks:
+      - local
+    environment:
+      - DAYTRADER_ACCOUNTS_SERVICE=https://daytrader-accounts:1443
+      - DAYTRADER_GATEWAY_SERVICE=https://daytrader-gateway:2443
+      - DAYTRADER_PORTFOLIOS_SERVICE=https://daytrader-portfolios:3443
+      - DAYTRADER_QUOTES_SERVICE=https://daytrader-quotes:4443
+      
+networks:
+  local:
+    # Use a custom driver
+    driver: bridge   

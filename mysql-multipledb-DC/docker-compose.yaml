@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  mysql-portfolio:
+    image: mysql:5
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: dummy 
+      MYSQL_USER: sudheesh
+      MYSQL_PASSWORD: dummy
+      MYSQL_DATABASE: erecord1
+
+  mysql-account:
+    image: mysql:5
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: dummy 
+      MYSQL_USER: sudheesh
+      MYSQL_PASSWORD: dummy
+      MYSQL_DATABASE: erecord
